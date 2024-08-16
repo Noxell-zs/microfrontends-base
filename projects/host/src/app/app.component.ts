@@ -4,7 +4,6 @@ import {InstancesService} from "./services/instances.service";
 import {NgForOf} from "@angular/common";
 import {AuthComponent} from "auth";
 
-
 @Component({
   selector: 'app-root',
   standalone: true,
