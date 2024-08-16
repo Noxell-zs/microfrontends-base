@@ -1,0 +1,3 @@
+[submodule "projects/instance"]
+	path = projects/instance
+	url = https://github.com/Noxell-zs/microfrontends-instance
