@@ -5,7 +5,8 @@
     "ng": "ng",
     "start": "concurrently \"ng serve host -o\" \"ng serve instance\"",
     "build": "ng build host --configuration production && ng build instance --configuration production",
-    "watch": "ng build --watch --configuration development"
+    "watch": "concurrently \"ng build host --watch\" \"ng build instance --watch\" \"node server.js\"",
+    "serve": "node server.js"
   },
   "private": true,
   "dependencies": {
