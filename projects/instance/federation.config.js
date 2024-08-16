@@ -2,10 +2,10 @@ const { withNativeFederation, shareAll } = require('@angular-architects/native-f
 
 module.exports = withNativeFederation({
 
-  name: 'app2',
+  name: 'instance',
 
   exposes: {
-    './Instance': './projects/app2/src/app/app.component.ts',
+    './Instance': './projects/instance/src/app/app.component.ts',
   },
 
   shared: {
