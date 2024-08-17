@@ -11,6 +11,7 @@ const contentTypes = {
   'html': 'text/html',
   'css': 'text/css',
   'ico': 'image/x-icon',
+  'svg': 'image/svg+xml',
 };
 
 
