@@ -1,5 +1,5 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component} from '@angular/core';
-import {ActivatedRoute, RouterLink, RouterOutlet} from '@angular/router';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {RouterLink, RouterOutlet} from '@angular/router';
 import {InstancesService} from "./services/instances.service";
 import {NgForOf} from "@angular/common";
 import {AuthComponent} from "auth";
@@ -8,11 +8,12 @@ import {AuthComponent} from "auth";
   selector: 'app-root',
   standalone: true,
   imports: [RouterOutlet, NgForOf, RouterLink, AuthComponent],
+  providers: [InstancesService],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class AppComponent {
+export class AppComponent implements OnInit {
   title = 'host';
   instances?: string[];
   image?: string;
@@ -20,21 +21,19 @@ export class AppComponent {
   constructor(
     private instancesService: InstancesService,
     private cdr: ChangeDetectorRef,
-    private route: ActivatedRoute,
-  ) {
-    instancesService.getFederationManifest()
+  ) {}
+
+  ngOnInit(): void {
+    this.instancesService.getFederationManifest()
       .subscribe((manifest) => {
         this.instances = Object.keys(manifest);
-        cdr.markForCheck();
+        this.cdr.markForCheck();
       });
 
-    instancesService.getPath(
-      '/assets/aaa.svg',
-      route.snapshot.data['name'],
-    )
+    this.instancesService.getPath('assets/aaa.svg')
       .subscribe((image) => {
         this.image = image;
-        cdr.markForCheck();
+        this.cdr.markForCheck();
       });
   }
 }
