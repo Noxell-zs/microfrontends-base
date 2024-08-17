@@ -1,7 +1,7 @@
 import {Injectable} from "@angular/core";
 import {HttpClient} from "@angular/common/http";
-import {Observable, shareReplay} from "rxjs";
-import {FederationManifest} from "../models/federation-manifest";
+import {map, Observable, shareReplay} from "rxjs";
+import {AnyFederationManifest, FederationManifest} from "../models/federation-manifest";
 import {FEDERATION_MANIFEST} from "../consts/urls";
 
 @Injectable({providedIn: "root"})
@@ -19,5 +19,16 @@ export class InstancesService {
         bufferSize: 1,
       })
     );
+  }
+
+  getPath(fragment: string, instanceName?: string): Observable<string> {
+    return this.getFederationManifest().pipe(map((
+      manifest: AnyFederationManifest
+    ) => {
+      if (instanceName && (instanceName in manifest)) {
+        return `${manifest[instanceName].replace('/remoteEntry.json', '')}${fragment}`;
+      }
+      return fragment;
+    }));
   }
 }

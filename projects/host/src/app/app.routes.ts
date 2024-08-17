@@ -10,5 +10,4 @@ export const routes$: Promise<Routes> = fetch(FEDERATION_MANIFEST)
     loadComponent: () =>
       loadRemoteModule(name, './Instance').then((m) => m.AppComponent),
     data: {name},
-
   })));
