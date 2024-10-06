@@ -1,8 +1,10 @@
-import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit} from '@angular/core';
+import {ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit, ViewChild, ViewContainerRef} from '@angular/core';
 import {RouterLink, RouterOutlet} from '@angular/router';
 import {InstancesService} from "./services/instances.service";
 import {NgForOf} from "@angular/common";
 import {AuthComponent} from "auth";
+import { loadRemoteModule } from '@angular-architects/native-federation';
+import { switchMap, tap } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -14,6 +16,8 @@ import {AuthComponent} from "auth";
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class AppComponent implements OnInit {
+  @ViewChild('news', { read: ViewContainerRef }) viewContainer!: ViewContainerRef;
+
   title = 'host';
   instances?: string[];
   image?: string;
@@ -24,11 +28,18 @@ export class AppComponent implements OnInit {
   ) {}
 
   ngOnInit(): void {
-    this.instancesService.getFederationManifest()
-      .subscribe((manifest) => {
-        this.instances = Object.keys(manifest);
-        this.cdr.markForCheck();
-      });
+    this.instancesService.getFederationManifest().pipe(
+      tap((manifest) => this.instances = Object.keys(manifest)),
+      switchMap(
+        (manifest) => loadRemoteModule({
+          remoteEntry: manifest.instance,
+          exposedModule: './News'
+        })
+      )
+    ).subscribe((module) => {
+      const ref = this.viewContainer.createComponent(module.NewsComponent);
+      this.cdr.markForCheck();
+    });
 
     this.instancesService.getPath('assets/aaa.svg')
       .subscribe((image) => {
